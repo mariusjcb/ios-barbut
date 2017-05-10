@@ -9,17 +9,42 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    
+    var _lastScore = 0 {
+        didSet {
+            lastScore?.text = "ULTIMUL SCOR \(_lastScore)"
+        }
+    }
+    
+    var score = 0 {
+        didSet {
+            if oldValue > 0 {
+                _lastScore = oldValue
+                UserDefaults.standard.set(score, forKey: "savedScore")
+            }
+            
+            newScore?.text = "SCOR NOU: \(score)"
+        }
+    }
+    
+    @IBOutlet weak var lastScore: UILabel! {
+        didSet {
+            if let savedScore = UserDefaults.standard.object(forKey: "savedScore") as? Int {
+                _lastScore = savedScore
+            }
+        }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBOutlet weak var newScore: UILabel!
+    
+    @IBOutlet weak var dice1: DiceImageView!
+    @IBOutlet weak var dice2: DiceImageView!
+    
+    @IBAction func roll(_ sender: UIButton) {
+        dice1.rollDice()
+        dice2.rollDice()
+        
+        score = dice1.diceNumber + dice2.diceNumber
     }
-
-
 }
 
